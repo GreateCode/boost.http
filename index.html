@@ -1,0 +1,183 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
+<title>Chapter&#160;1.&#160;Boost.Http</title>
+<link rel="stylesheet" href="boostbook.css" type="text/css">
+<meta name="generator" content="DocBook XSL Stylesheets V1.75.2">
+<link rel="home" href="index.html" title="Chapter&#160;1.&#160;Boost.Http">
+<link rel="next" href="using.html" title="Chapter&#160;2.&#160;Using">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<div class="spirit-nav"><a accesskey="n" href="using.html"><img src="images/next.png" alt="Next"></a></div>
+<div class="chapter">
+<div class="titlepage"><div>
+<div><h2 class="title">
+<a name="boost_http"></a>Chapter&#160;1.&#160;Boost.Http</h2></div>
+<div><div class="author"><h3 class="author">
+<span class="firstname">Vin&#237;cius</span> <span class="surname">Oliveira</span>
+</h3></div></div>
+<div><p class="copyright">Copyright &#169; 2014, 2015 Vin&#237;cius dos Santos Oliveira</p></div>
+<div><div class="legalnotice">
+<a name="boost_http.legal"></a><p>
+        Distributed under the Boost Software License, Version 1.0. (See accompanying
+        file LICENSE_1_0.txt or copy at <a href="http://www.boost.org/LICENSE_1_0.txt" target="_top">http://www.boost.org/LICENSE_1_0.txt</a>)
+      </p>
+</div></div>
+</div></div>
+<div class="blockquote"><blockquote class="blockquote"><p>
+      This library can be used to create applications that need to expose services
+      through HTTP (e.g. embeddable ReST services).
+    </p></blockquote></div>
+<div class="warning"><table border="0" summary="Warning">
+<tr>
+<td rowspan="2" align="center" valign="top" width="25"><img alt="[Warning]" src="images/warning.png"></td>
+<th align="left">Warning</th>
+</tr>
+<tr><td align="left" valign="top"><p>
+      This is not an official Boost C++ library. It wasn't reviewed and can't be
+      downloaded from www.boost.org. <a href="http://www.boost.org/community/review_schedule.html" target="_top">This
+      library will be reviewed eventually</a>.
+    </p></td></tr>
+</table></div>
+<p>
+    Conceptually Boost.Http is a Boost.Asio socket for HTTP, which means can leverage
+    Boost.Asio features such as SSL and coroutines, and it integrates seemlessly
+    with other Boost.Asio sockets.
+  </p>
+<p>
+    Among its features:
+  </p>
+<div class="itemizedlist"><ul class="itemizedlist" type="disc">
+<li class="listitem">
+        Support for modern HTTP features.
+        <div class="itemizedlist"><ul class="itemizedlist" type="circle">
+<li class="listitem">
+              Pipelining and persistent connection, where the same connection can
+              be used to serve HTTP multiple requests.
+            </li>
+<li class="listitem">
+              Chunking, where the HTTP body can be split into smaller pieces that
+              are sent one by one. This is useful for building event listeners.
+            </li>
+<li class="listitem">
+              Upgrading, where the HTTP protocol can be changed into another protocol
+              such as WebSockets.
+            </li>
+<li class="listitem">
+              Security, where SSL is used to encrypt the traffic.
+            </li>
+<li class="listitem">
+              <code class="literal">100-continue</code> status.
+            </li>
+</ul></div>
+      </li>
+<li class="listitem">
+        Lean API that unifies HTTP messages and HTTP chunking.
+        <div class="itemizedlist"><ul class="itemizedlist" type="circle">
+<li class="listitem">
+              You can handle the request as soon as the metadata is available (request
+              line plus header section).
+            </li>
+<li class="listitem">
+              There is only one API to acquire the request body. This API allows
+              progressive downloading.
+            </li>
+<li class="listitem">
+              The response body can be be generated wholesale for normal HTTP responses,
+              or be split into smaller pieces using HTTP chunking.
+            </li>
+</ul></div>
+      </li>
+<li class="listitem">
+        Extensible asynchronous design inherited from ASIO.
+        <div class="itemizedlist"><ul class="itemizedlist" type="circle">
+<li class="listitem">
+              Interaction via futures, coroutines, or callbacks.
+            </li>
+<li class="listitem">
+              Various HTTP server architectures are possible, whether multi-threaded
+              servers (one thread per request, either with or without a thread-pool),
+              one coroutine per request, or completely single-threaded.
+            </li>
+<li class="listitem">
+              Seamless integration with other non-HTTP ASIO services.
+            </li>
+</ul></div>
+      </li>
+</ul></div>
+<p>
+    Boost.Http also provides a couple of special-purpose server classes:
+  </p>
+<div class="itemizedlist"><ul class="itemizedlist" type="disc">
+<li class="listitem">
+        Lightweight standalone server.
+        <div class="itemizedlist"><ul class="itemizedlist" type="circle"><li class="listitem">
+              The underlying socket type is customizable, so you can also use a
+              <code class="literal">queue_socket</code><sup>[<a name="boost_http.f0" href="#ftn.boost_http.f0" class="footnote">1</a>]</sup><sup>[<a name="boost_http.f1" href="#ftn.boost_http.f1" class="footnote">2</a>]</sup>.
+            </li></ul></div>
+      </li>
+<li class="listitem">
+        Flexible static file server with support for conditional requests, partial
+        download and ETag recognition.
+        <div class="itemizedlist"><ul class="itemizedlist" type="circle">
+<li class="listitem">
+              You can use the default file resolver or provide one yourself.
+            </li>
+<li class="listitem">
+              You can adapt the default resolver.
+            </li>
+<li class="listitem">
+              You can add a last hook to customize the response message before the
+              file is served.
+            </li>
+<li class="listitem">
+              Stateless abstractions, relying on OS capabilities to provide cache.
+            </li>
+</ul></div>
+      </li>
+</ul></div>
+<p>
+    Boost.Http has been designed for multiple backends, such HTTP/2, and FastGCI,
+    which can be added in the future. You can choose between compile-time and runtime
+    polymorphism. Adapters are provided.
+  </p>
+<div class="variablelist">
+<p class="title"><b></b></p>
+<dl>
+<dt><span class="term"><a class="link" href="using.html" title="Chapter&#160;2.&#160;Using">Using</a></span></dt>
+<dd><p>
+          Requirements and installation.
+        </p></dd>
+<dt><span class="term"><a class="link" href="tutorial.html" title="Chapter&#160;3.&#160;Tutorial">Tutorial</a></span></dt>
+<dd><p>
+          Learn the basics.
+        </p></dd>
+<dt><span class="term"><a class="link" href="design_choices.html" title="Chapter&#160;4.&#160;Design choices">Design choices</a></span></dt>
+<dd><p>
+          See the rationale for the possibly creative choices.
+        </p></dd>
+<dt><span class="term"><a class="link" href="reference.html" title="Chapter&#160;5.&#160;Reference">Reference</a></span></dt>
+<dd><p>
+          Detailed concepts, classes and functions reference.
+        </p></dd>
+</dl>
+</div>
+<div class="footnotes">
+<br><hr width="100" align="left">
+<div class="footnote"><p><sup>[<a name="ftn.boost_http.f0" href="#boost_http.f0" class="para">1</a>] </sup>
+                Useful to avoid the gotchas of ASIO composed operations. See <a href="http://sourceforge.net/p/asio/mailman/message/32259256/" target="_top">http://sourceforge.net/p/asio/mailman/message/32259256/</a>
+                for more information.
+              </p></div>
+<div class="footnote"><p><sup>[<a name="ftn.boost_http.f1" href="#boost_http.f1" class="para">2</a>] </sup>
+                See an example at <a href="http://sourceforge.net/p/axiomq/code/ci/master/tree/include/axiomq/basic_queue_socket.hpp" target="_top">http://sourceforge.net/p/axiomq/code/ci/master/tree/include/axiomq/basic_queue_socket.hpp</a>.
+              </p></div>
+</div>
+</div>
+<table xmlns:rev="http://www.cs.rpi.edu/~gregod/boost/tools/doc/revision" width="100%"><tr>
+<td align="left"><p><small>Last revised: August 03, 2015 at 02:28:24 GMT</small></p></td>
+<td align="right"><div class="copyright-footer"></div></td>
+</tr></table>
+<hr>
+<div class="spirit-nav"><a accesskey="n" href="using.html"><img src="images/next.png" alt="Next"></a></div>
+</body>
+</html>

@@ -1,0 +1,189 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
+<title>Chapter&#160;4.&#160;Design choices</title>
+<link rel="stylesheet" href="boostbook.css" type="text/css">
+<meta name="generator" content="DocBook XSL Stylesheets V1.75.2">
+<link rel="home" href="index.html" title="Chapter&#160;1.&#160;Boost.Http">
+<link rel="up" href="index.html" title="Chapter&#160;1.&#160;Boost.Http">
+<link rel="prev" href="tutorial.html" title="Chapter&#160;3.&#160;Tutorial">
+<link rel="next" href="design_choices/design_choices.html" title="Design choices">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<div class="spirit-nav">
+<a accesskey="p" href="tutorial.html"><img src="images/prev.png" alt="Prev"></a><a accesskey="u" href="index.html"><img src="images/up.png" alt="Up"></a><a accesskey="h" href="index.html"><img src="images/home.png" alt="Home"></a><a accesskey="n" href="design_choices/design_choices.html"><img src="images/next.png" alt="Next"></a>
+</div>
+<div class="chapter">
+<div class="titlepage"><div><div><h2 class="title">
+<a name="design_choices"></a>Chapter&#160;4.&#160;Design choices</h2></div></div></div>
+<div class="toc">
+<p><b>Table of Contents</b></p>
+<dl>
+<dt><span class="section"><a href="design_choices.html#design_choices.faq">FAQ</a></span></dt>
+<dt><span class="section"><a href="design_choices/design_choices.html">Design choices</a></span></dt>
+<dd><dl>
+<dt><span class="section"><a href="design_choices/design_choices.html#design_choices.design_choices.the_what">The what</a></span></dt>
+<dt><span class="section"><a href="design_choices/design_choices.html#design_choices.design_choices.asio_familiarity">ASIO
+        familiarity</a></span></dt>
+<dt><span class="section"><a href="design_choices/design_choices.html#design_choices.design_choices.the_mysterious_weird_news_api">The
+        mysterious/weird/news API</a></span></dt>
+<dt><span class="section"><a href="design_choices/design_choices.html#design_choices.design_choices.the_why">The why</a></span></dt>
+<dt><span class="section"><a href="design_choices/design_choices.html#design_choices.design_choices.the_when">The when</a></span></dt>
+</dl></dd>
+<dt><span class="section"><a href="design_choices/roadmap.html">Roadmap</a></span></dt>
+</dl>
+</div>
+<div class="section">
+<div class="titlepage"><div><div><h2 class="title" style="clear: both">
+<a name="design_choices.faq"></a><a class="link" href="design_choices.html#design_choices.faq" title="FAQ">FAQ</a>
+</h2></div></div></div>
+<div class="variablelist">
+<p class="title"><b></b></p>
+<dl>
+<dt><span class="term">Why build on top of Boost.Asio?</span></dt>
+<dd>
+<p>
+              One of the requirements of Boost.Http is scalable performance. Scalable
+              performance requires an asynchronous design. Asio is expected to become
+              the future C++ standard for sockets. So, Asio it is.
+            </p>
+<p>
+              Also, reuse existing std or Boost components is nice and Asio is the
+              Boost solution for asynchronous socket I/O.
+            </p>
+</dd>
+<dt><span class="term">Why C++11?</span></dt>
+<dd>
+<p>
+              Asynchronous code can be largely simplified with language support for
+              lambdas. To speed up the development (and decrease bugs), C++11 was
+              chosen, but interface-wise, the only real C++11 feature is enum classes,
+              which can be emulated in C++98 easily.
+            </p>
+<p>
+              C++98 support might be added later. The priority is to prove the core
+              set of abstractions is correct. Then I can move on the task to fatten
+              the library. The proof comes in the act of passing the Boost review
+              process.
+            </p>
+<p>
+              To be fair, I also depend on the C++11 definition of <code class="computeroutput"><span class="identifier">multimap</span></code>, but Boost containers can
+              do the job easily.
+            </p>
+</dd>
+<dt><span class="term">Have you considered contribute to <span class="emphasis"><em>project X/Y</em></span>?</span></dt>
+<dd>
+<p>
+              <a href="https://github.com/vinipsmaker/gsoc2014-boost/blob/master/other_frameworks.md" target="_top">Yes,
+              I have</a>.
+            </p>
+<p>
+              But current Boost.Http is not like what I was expecting when I started
+              to writing it. Boost.Http is better. The gap between Boost.Http and
+              other projects became even larger. My previous research won't mention
+              every difference.
+            </p>
+<p>
+              Boost.Http supports pipelining. Pion has separate functions for chunking.
+              Boost.Http is designed for multiple backends. POCO, QtHttp and Casablanca
+              aren't build on top of Asio. Pion and cpp-netlib will use their own
+              thread-pool, instead adhering to Asio threading model.
+            </p>
+</dd>
+<dt><span class="term">Why is it only server-side?</span></dt>
+<dd>
+<p>
+              Server-side and client-side are of interest to different applications.
+              Initially, the focus was to provide a library just to server-side,
+              but with the time spent on research and development, it became apparent
+              that many of the proposed abstractions are also useful for client-side.
+            </p>
+<p>
+              After this fact, a lot of caution was devoted to design the interface
+              to retain the usefulness in client-side, where it makes sense. But
+              this is not enough. A lot of time was spent on research just to get
+              the server-side right and I expect that much time (or more) to also
+              get the client-side right.
+            </p>
+<p>
+              Before any serious effort is spent on client-side, I want to focus
+              on server-side, where the application load may be way higher and C++
+              may be way more desired. And just as the server-side interface development
+              was driven by a strict set of guidelines (multiple backends, modularity
+              with specific use cases...), we need to define what we want to achieve
+              with the client-side abstraction. What kind of usage will be appropriate
+              with such design.
+            </p>
+</dd>
+<dt><span class="term">Why isn't a router available?</span></dt>
+<dd>
+<p>
+              Advocates of tree-based routers tend to ignore the middleware-based
+              approach and the other way around is also true. It happens that some
+              even only know one way and don't even stop to consider that their approach
+              isn't appropriate for every project. This subject will affect the life
+              of the users <span class="bold"><strong>a lot</strong></span> and can be rather
+              polemic.
+            </p>
+<p>
+              I just provide the building blocks and you can create the router any
+              way you want. Actually, I intend to implement them later, because implementing
+              them now will just distract the attention of the reviewers and it'd
+              be a waste of time if the review proves the core set of abstractions
+              is wrong.
+            </p>
+<p>
+              Most of the designs I see propose dynamic routers, where you can change
+              the routing rules at runtime, but this feature is rarely needed. Wouldn't
+              be wonderful if you could use great syntax sugars to declare routers
+              that receive as much optimization as possible at compile-time? Wouldn't
+              be wonderful to use nested routers? Wouldn't be wonderful if you could
+              collaborate the tree-based and middleware-based approach very easily?
+              Maybe even some kind of collaboration between the statically declared
+              routers and dynamic routers? I hope this will be rather polemic and
+              will require a lot of iterations to get it right, maybe with a mini-review
+              for acceptance.
+            </p>
+</dd>
+<dt><span class="term">Why is the library not header-only?</span></dt>
+<dd>
+<p>
+              Besides not affecting the code you <span class="bold"><strong>write</strong></span>
+              at all, the library demands linkage thanks to the reasons below:
+            </p>
+<div class="itemizedlist"><ul class="itemizedlist" type="disc">
+<li class="listitem">
+                  It uses Ryan Dahl's HTTP C parser, which is not header-only.
+                </li>
+<li class="listitem">
+                  It uses custom error code categories, which demands static objects.
+                </li>
+<li class="listitem">
+                  Code that only needs to compiled once. This will decrease build
+                  times.
+                </li>
+</ul></div>
+</dd>
+<dt><span class="term">Why doesn't the library use a Spirit-based HTTP parser exposed to
+          the user?</span></dt>
+<dd>
+              Code reuse. We might do that later.
+            </dd>
+</dl>
+</div>
+</div>
+</div>
+<table xmlns:rev="http://www.cs.rpi.edu/~gregod/boost/tools/doc/revision" width="100%"><tr>
+<td align="left"></td>
+<td align="right"><div class="copyright-footer">Copyright &#169; 2014, 2015 Vin&#237;cius dos Santos Oliveira<p>
+        Distributed under the Boost Software License, Version 1.0. (See accompanying
+        file LICENSE_1_0.txt or copy at <a href="http://www.boost.org/LICENSE_1_0.txt" target="_top">http://www.boost.org/LICENSE_1_0.txt</a>)
+      </p>
+</div></td>
+</tr></table>
+<hr>
+<div class="spirit-nav">
+<a accesskey="p" href="tutorial.html"><img src="images/prev.png" alt="Prev"></a><a accesskey="u" href="index.html"><img src="images/up.png" alt="Up"></a><a accesskey="h" href="index.html"><img src="images/home.png" alt="Home"></a><a accesskey="n" href="design_choices/design_choices.html"><img src="images/next.png" alt="Next"></a>
+</div>
+</body>
+</html>

@@ -1,0 +1,101 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
+<title>is_socket</title>
+<link rel="stylesheet" href="../boostbook.css" type="text/css">
+<meta name="generator" content="DocBook XSL Stylesheets V1.75.2">
+<link rel="home" href="../index.html" title="Chapter&#160;1.&#160;Boost.Http">
+<link rel="up" href="../reference.html" title="Chapter&#160;5.&#160;Reference">
+<link rel="prev" href="is_message.html" title="is_message">
+<link rel="next" href="is_server_socket.html" title="is_server_socket">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<div class="spirit-nav">
+<a accesskey="p" href="is_message.html"><img src="../images/prev.png" alt="Prev"></a><a accesskey="u" href="../reference.html"><img src="../images/up.png" alt="Up"></a><a accesskey="h" href="../index.html"><img src="../images/home.png" alt="Home"></a><a accesskey="n" href="is_server_socket.html"><img src="../images/next.png" alt="Next"></a>
+</div>
+<div class="section">
+<div class="titlepage"><div><div><h2 class="title" style="clear: both">
+<a name="reference.is_socket"></a><a class="link" href="is_socket.html" title="is_socket">is_socket</a>
+</h2></div></div></div>
+<div class="toc"><dl>
+<dt><span class="section"><a href="is_socket.html#reference.is_socket.template_parameters">Template parameters</a></span></dt>
+<dt><span class="section"><a href="is_socket.html#reference.is_socket.see_also">See also</a></span></dt>
+</dl></div>
+<pre class="programlisting"><span class="preprocessor">#include</span> <span class="special">&lt;</span><span class="identifier">boost</span><span class="special">/</span><span class="identifier">http</span><span class="special">/</span><span class="identifier">traits</span><span class="special">.</span><span class="identifier">hpp</span><span class="special">&gt;</span>
+</pre>
+<p>
+        If <code class="computeroutput"><span class="identifier">T</span></code> is an object fulfilling
+        the <a class="link" href="socket_concept.html" title="Socket"><code class="literal">Socket</code> concept</a>,
+        this template inherits <code class="computeroutput"><span class="identifier">std</span><span class="special">::</span><span class="identifier">true_type</span></code>.
+        For any other type, this template inherits <code class="computeroutput"><span class="identifier">std</span><span class="special">::</span><span class="identifier">false_type</span></code>.
+      </p>
+<p>
+        This template may be specialized for a user-defined type to indicate that
+        the type is eligible for operations involving <a class="link" href="socket_concept.html" title="Socket"><code class="literal">Socket</code>
+        objects</a>. If your user-defined type already specializes <code class="literal"><a class="link" href="is_server_socket.html" title="is_server_socket">is_server_socket</a></code>, there
+        is no need to also specialize this template, because this template will,
+        by default, inherit <code class="computeroutput"><span class="identifier">std</span><span class="special">::</span><span class="identifier">true_type</span></code> if <code class="computeroutput"><span class="identifier">is_server_socket</span><span class="special">&lt;</span><span class="identifier">T</span><span class="special">&gt;::</span><span class="identifier">value</span></code> evaluates to <code class="computeroutput"><span class="keyword">true</span></code>.
+      </p>
+<div class="note"><table border="0" summary="Note">
+<tr>
+<td rowspan="2" align="center" valign="top" width="25"><img alt="[Note]" src="../images/note.png"></td>
+<th align="left">Note</th>
+</tr>
+<tr><td align="left" valign="top"><p>
+          In the future, when the client code is added, this trait will also detect
+          if <code class="computeroutput"><span class="identifier">T</span></code> is a client socket.
+        </p></td></tr>
+</table></div>
+<p>
+        Initially, it was considered to create a trait that would automatically detect
+        if <code class="computeroutput"><span class="identifier">T</span></code> is fullfilling the
+        <a class="link" href="socket_concept.html" title="Socket"><code class="literal">Socket</code> concept</a>,
+        but the idea was abandoned, because the <a class="link" href="socket_concept.html" title="Socket"><code class="literal">Socket</code>
+        concept</a> includes behaviour that can only be detected at runtime.
+      </p>
+<div class="section">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="reference.is_socket.template_parameters"></a><a class="link" href="is_socket.html#reference.is_socket.template_parameters" title="Template parameters">Template parameters</a>
+</h3></div></div></div>
+<div class="variablelist">
+<p class="title"><b></b></p>
+<dl>
+<dt><span class="term"><code class="computeroutput"><span class="identifier">T</span></code></span></dt>
+<dd><p>
+                The type to query.
+              </p></dd>
+</dl>
+</div>
+</div>
+<div class="section">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="reference.is_socket.see_also"></a><a class="link" href="is_socket.html#reference.is_socket.see_also" title="See also">See also</a>
+</h3></div></div></div>
+<div class="itemizedlist"><ul class="itemizedlist" type="disc">
+<li class="listitem">
+              <a class="link" href="socket_concept.html" title="Socket"><code class="literal">Socket</code>
+              concept</a>.
+            </li>
+<li class="listitem">
+              <code class="literal"><a class="link" href="basic_socket.html" title="basic_socket">basic_socket</a></code>.
+            </li>
+<li class="listitem">
+              <code class="literal"><a class="link" href="socket.html" title="socket">socket</a></code>.
+            </li>
+</ul></div>
+</div>
+</div>
+<table xmlns:rev="http://www.cs.rpi.edu/~gregod/boost/tools/doc/revision" width="100%"><tr>
+<td align="left"></td>
+<td align="right"><div class="copyright-footer">Copyright &#169; 2014, 2015 Vin&#237;cius dos Santos Oliveira<p>
+        Distributed under the Boost Software License, Version 1.0. (See accompanying
+        file LICENSE_1_0.txt or copy at <a href="http://www.boost.org/LICENSE_1_0.txt" target="_top">http://www.boost.org/LICENSE_1_0.txt</a>)
+      </p>
+</div></td>
+</tr></table>
+<hr>
+<div class="spirit-nav">
+<a accesskey="p" href="is_message.html"><img src="../images/prev.png" alt="Prev"></a><a accesskey="u" href="../reference.html"><img src="../images/up.png" alt="Up"></a><a accesskey="h" href="../index.html"><img src="../images/home.png" alt="Home"></a><a accesskey="n" href="is_server_socket.html"><img src="../images/next.png" alt="Next"></a>
+</div>
+</body>
+</html>
